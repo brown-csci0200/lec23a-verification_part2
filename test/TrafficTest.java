@@ -9,7 +9,7 @@ import java.util.*;
 
 public class TrafficTest {
 
-    private TransitionSystem makeTrafficSystem(TrafficState start) {
+    private TransitionSystem<TrafficState> makeTrafficSystem(TrafficState start) {
         TransitionSystem ts = new TransitionSystem(start);
         ts.addTransition("timer",
                 new TrafficState(GREEN, GREEN), new TrafficState(YELLOW, YELLOW));
@@ -49,31 +49,35 @@ public class TrafficTest {
 //        return ts;
 //    }
 
+    private static boolean isTrafficHazard(TrafficState state) {
+        // Version 1: a state is a traffic hazard if it is double-green
+//        return state.equals(new TrafficState(GREEN, GREEN));
+
+        // Version 2: a state is a traffic hazard if it doesn't have a red
+        return !(state.hope == RED || state.waterman == RED);
+    }
+
     @Test
     public void testGoodTrafficSafety() {
-        TransitionSystem goodSystem = makeTrafficSystem(new TrafficState(RED, GREEN));
-        Assert.assertFalse(goodSystem.canBeBad(
-                (state) -> state.equals(new TrafficState(GREEN, GREEN))
-        ));
+        TransitionSystem<TrafficState> goodSystem = makeTrafficSystem(new TrafficState(RED, GREEN));
+        Assert.assertFalse(goodSystem.canBeBad(TrafficTest::isTrafficHazard));
     }
 
     @Test
     public void testBadTrafficSafety() {
-        TransitionSystem badSystem = makeTrafficSystem(new TrafficState(RED, RED));
-        Assert.assertTrue(badSystem.canBeBad(
-                (state) -> state.equals(new TrafficState(GREEN, GREEN))
-        ));
+        TransitionSystem<TrafficState> badSystem = makeTrafficSystem(new TrafficState(RED, RED));
+        Assert.assertTrue(badSystem.canBeBad(TrafficTest::isTrafficHazard));
     }
 
     @Test
     public void testGoodTrafficLiveness() {
-        TransitionSystem goodSystem = makeTrafficSystem(new TrafficState(RED, GREEN));
+        TransitionSystem<TrafficState> goodSystem = makeTrafficSystem(new TrafficState(RED, GREEN));
         Assert.assertTrue(goodSystem.canLoop());
     }
 
     @Test
     public void testBadTrafficLiveness() {
-        TransitionSystem badSystem = makeTrafficSystem(new TrafficState(RED, RED));
+        TransitionSystem<TrafficState> badSystem = makeTrafficSystem(new TrafficState(RED, RED));
         Assert.assertTrue(badSystem.canLoop());
     }
 }

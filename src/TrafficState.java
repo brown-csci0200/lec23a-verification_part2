@@ -1,8 +1,8 @@
 package src;
 
 public class TrafficState {
-    TrafficLight hope;
-    TrafficLight waterman;
+    public TrafficLight hope;
+    public TrafficLight waterman;
 
     public TrafficState(TrafficLight h, TrafficLight w) {
         this.hope = h;

@@ -4,6 +4,8 @@ import javax.swing.plaf.nimbus.State;
 import java.util.*;
 import java.util.function.Function;
 
+// TransitionSystem<TrafficState> = new TransitionSystem<TrafficState>(...);
+
 public class TransitionSystem <StateType> {
     StateType startState;
     HashMap<StateType, Vertex<StateType>> allVertices;
